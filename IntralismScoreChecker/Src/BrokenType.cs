@@ -18,6 +18,6 @@
         /// <summary>
         ///     Indicates that it's unknown if the Intralism map is broken.
         /// </summary>
-        Idk,
+        idk,
     }
 }

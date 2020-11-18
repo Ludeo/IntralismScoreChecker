@@ -6,6 +6,13 @@
         <Description>A library that checks the scores and details of an intralism player</Description>
         <PackageProjectUrl>https://github.com/Ludeo/IntralismScoreChecker</PackageProjectUrl>
         <RepositoryUrl>https://github.com/Ludeo/IntralismScoreChecker</RepositoryUrl>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <PackageVersion>1.0.1</PackageVersion>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+      <DocumentationFile>bin\Debug\IntralismScoreChecker.xml</DocumentationFile>
     </PropertyGroup>
 
     <ItemGroup>
