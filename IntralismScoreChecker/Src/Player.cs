@@ -15,9 +15,15 @@ namespace IntralismScoreChecker
         /// <summary>
         ///     Initializes a new instance of the <see cref="Player"/> class.
         /// </summary>
-        /// <param name="profileLink"> Link to the profile of the player. </param>
-        public Player(string profileLink)
+        /// <param name="profileLink"> Link to the profile of the player or the search input. </param>
+        /// <param name="withLink"> Boolean that indicates if profileLink is the actual profile link or if you want to search for a player. </param>
+        public Player(string profileLink, bool withLink)
         {
+            if (withLink == false)
+            {
+                profileLink = SearchForPlayer(profileLink);
+            }
+
             this.Link = profileLink;
             this.Id = long.Parse(profileLink[(profileLink.LastIndexOf("=", StringComparison.Ordinal) + 1) ..]!);
             this.FillScoresList();
@@ -135,6 +141,18 @@ namespace IntralismScoreChecker
         ///     Gets or sets the amount of points that the player needs to rank up in global ranks.
         /// </summary>
         public double         RankUpPoints     { get; set; }
+
+        private static string SearchForPlayer(string searchInput)
+        {
+            string url = "https://intralism.khb-soft.ru/?page=ranks&search=" + searchInput;
+            HtmlWeb web = new ();
+            HtmlDocument doc = web.Load(url);
+
+            HtmlNode table = doc.DocumentNode.SelectSingleNode("/html/body/main/div[3]/table");
+            HtmlNode row = table.SelectSingleNode("tbody").SelectNodes("tr")[0];
+            string profile = row.Attributes[2].Value.TrimStart('.');
+            return "https://intralism.khb-soft.ru/" + profile;
+        }
 
         private static string GetPlayerLink(int rank)
         {
