@@ -27,6 +27,21 @@ namespace IntralismScoreChecker
         }
 
         /// <summary>
+        ///     Initializes a new instance of the <see cref="Player"/> class.
+        /// </summary>
+        /// <param name="rank"> Global Rank of the player. </param>
+        public Player(int rank)
+        {
+            string profileLink = GetPlayerLink(rank);
+            this.Link = profileLink;
+            this.Id = long.Parse(profileLink[(profileLink.LastIndexOf("=", StringComparison.Ordinal) + 1) ..]!);
+            this.FillScoresList();
+            this.ReadHtmlCode();
+            this.RecalculateScores();
+            this.CalculateRankUpPoints();
+        }
+
+        /// <summary>
         ///     Gets or sets the link of the player.
         /// </summary>
         public string         Link             { get; set; }
@@ -120,6 +135,32 @@ namespace IntralismScoreChecker
         ///     Gets or sets the amount of points that the player needs to rank up in global ranks.
         /// </summary>
         public double         RankUpPoints     { get; set; }
+
+        private static string GetPlayerLink(int rank)
+        {
+            int siteNumber = 0;
+            int index = 0;
+
+            if (rank % 100 == 0)
+            {
+                siteNumber = rank / 100;
+                index = 99;
+            }
+            else
+            {
+                index = (rank % 100) - 1;
+                siteNumber = (rank / 100) + 1;
+            }
+
+            string url = "https://intralism.khb-soft.ru/?page=ranks&n=" + siteNumber;
+            HtmlWeb web = new ();
+            HtmlDocument doc = web.Load(url);
+
+            HtmlNode table = doc.DocumentNode.SelectSingleNode("/html/body/main/div[3]/table");
+            HtmlNode row = table.SelectSingleNode("tbody").SelectNodes("tr")[index];
+            string profile = row.Attributes[2].Value.TrimStart('.');
+            return "https://intralism.khb-soft.ru/" + profile;
+        }
 
         private void ReadHtmlCode()
         {
