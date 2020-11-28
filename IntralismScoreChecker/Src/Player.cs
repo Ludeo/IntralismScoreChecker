@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using HtmlAgilityPack;
+using Newtonsoft.Json;
 
 namespace IntralismScoreChecker
 {
@@ -50,97 +51,122 @@ namespace IntralismScoreChecker
         /// <summary>
         ///     Gets or sets the link of the player.
         /// </summary>
+        [JsonProperty("link")]
         public string         Link             { get; set; }
 
         /// <summary>
         ///     Gets or sets the id of the player.
         /// </summary>
+        [JsonProperty("id")]
         public long           Id               { get; set; }
 
         /// <summary>
         ///     Gets or sets the name of the player.
         /// </summary>
+        [JsonProperty("name")]
         public string         Name             { get; set; }
 
         /// <summary>
         ///     Gets or sets the link to the profile picture of the player.
         /// </summary>
+        [JsonProperty("picturelink")]
         public string         PictureLink      { get; set; }
 
         /// <summary>
         ///     Gets or sets the List of <see cref="MapScore"/> that the user played.
         /// </summary>
+        [JsonProperty("scores")]
         public List<MapScore> Scores           { get; set; } = new List<MapScore>();
 
         /// <summary>
         ///     Gets or sets the global rank of the player.
         /// </summary>
+        [JsonProperty("globalrank")]
         public int            GlobalRank       { get; set; }
 
         /// <summary>
         ///     Gets or sets the total amount of players that have a global rank.
         /// </summary>
+        [JsonProperty("totalglobalrank")]
         public int            TotalGlobalRank  { get; set; }
 
         /// <summary>
         ///     Gets or sets the country rank of the player.
         /// </summary>
+        [JsonProperty("countryrank")]
         public int            CountryRank      { get; set; }
 
         /// <summary>
         ///     Gets or sets the total amount of players that have a country rank in the same country as the player.
         /// </summary>
+        [JsonProperty("totalcountryrank")]
         public int            TotalCountryRank { get; set; }
 
         /// <summary>
         ///     Gets or sets the country of the player.
         /// </summary>
+        [JsonProperty("country")]
         public string         Country          { get; set; }
 
         /// <summary>
         ///     Gets or sets the average miss count of the player.
         /// </summary>
+        [JsonProperty("averagemisses")]
         public double         AverageMisses    { get; set; }
 
         /// <summary>
         ///     Gets or sets the average accuracy of the player.
         /// </summary>
+        [JsonProperty("averageaccuracy")]
         public double         AverageAccuracy  { get; set; }
 
         /// <summary>
         ///     Gets or sets the total amount of points that the player got.
         /// </summary>
+        [JsonProperty("points")]
         public double         Points           { get; set; }
 
         /// <summary>
         ///     Gets or sets the real amount of points that the player would get, if maps wouldn't have <see cref="BrokenType"/> Broken.
         /// </summary>
+        [JsonProperty("realpoints")]
         public double         RealPoints       { get; set; }
 
         /// <summary>
         ///     Gets or sets the total amount of points that are achievable.
         /// </summary>
+        [JsonProperty("maximumpoints")]
         public double         MaximumPoints    { get; set; }
 
         /// <summary>
         ///     Gets or sets the difference between the points and the maximum points of the player.
         /// </summary>
+        [JsonProperty("difference")]
         public double         Difference       { get; set; }
 
         /// <summary>
         ///     Gets or sets the total amount of 100% accuracy plays of the player.
         /// </summary>
+        [JsonProperty("hundredplays")]
         public int            HundredPlays     { get; set; }
 
         /// <summary>
         ///     Gets or sets the total amount of ranked maps.
         /// </summary>
+        [JsonProperty("totalmaps")]
         public int            TotalMaps        { get; set; }
 
         /// <summary>
         ///     Gets or sets the amount of points that the player needs to rank up in global ranks.
         /// </summary>
+        [JsonProperty("rankuppoints")]
         public double         RankUpPoints     { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the time when the player was checked.
+        /// </summary>
+        [JsonProperty("timechecked")]
+        public DateTime TimeChecked { get; set; } = DateTime.Now;
 
         private static string SearchForPlayer(string searchInput)
         {
