@@ -11,6 +11,13 @@ namespace IntralismScoreChecker
         /// <summary>
         ///     Initializes a new instance of the <see cref="MapScore"/> class.
         /// </summary>
+        public MapScore()
+        {
+        }
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="MapScore"/> class.
+        /// </summary>
         /// <param name="mapLink"> The link to the map. </param>
         /// <param name="mapName"> The name of the map. </param>
         /// <param name="maxPoints"> The maximum points that is achievable on the map. </param>

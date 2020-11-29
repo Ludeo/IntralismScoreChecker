@@ -16,6 +16,13 @@ namespace IntralismScoreChecker
         /// <summary>
         ///     Initializes a new instance of the <see cref="Player"/> class.
         /// </summary>
+        public Player()
+        {
+        }
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="Player"/> class.
+        /// </summary>
         /// <param name="profileLink"> Link to the profile of the player or the search input. </param>
         /// <param name="withLink"> Boolean that indicates if profileLink is the actual profile link or if you want to search for a player. </param>
         public Player(string profileLink, bool withLink)
