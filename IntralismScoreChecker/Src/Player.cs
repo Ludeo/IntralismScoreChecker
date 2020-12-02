@@ -261,7 +261,7 @@ namespace IntralismScoreChecker
 
             try
             {
-                table.SelectSingleNode("tbody").SelectNodes("tr").Clear();
+                int testValue = table.SelectSingleNode("tbody").SelectNodes("tr").Count;
             }
             catch
             {
