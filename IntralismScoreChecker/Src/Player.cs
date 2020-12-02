@@ -189,8 +189,8 @@ namespace IntralismScoreChecker
 
         private static string GetPlayerLink(int rank)
         {
-            int siteNumber = 0;
-            int index = 0;
+            int siteNumber;
+            int index;
 
             if (rank % 100 == 0)
             {
@@ -252,44 +252,57 @@ namespace IntralismScoreChecker
 
             this.TotalMaps = this.Scores.Count;
 
-            foreach (HtmlNode table in doc.DocumentNode.SelectNodes("/html/body/main/div[3]/table"))
+            HtmlNode table = doc.DocumentNode.SelectSingleNode("/html/body/main/div[3]/table");
+
+            if (table.SelectSingleNode("thead").SelectSingleNode("tr").SelectSingleNode("th[2]").InnerText.Contains("Until"))
             {
-                foreach (HtmlNode row in table.SelectSingleNode("tbody").SelectNodes("tr"))
+                table = doc.DocumentNode.SelectSingleNode("/html/body/main/div[4]/table");
+            }
+
+            try
+            {
+                table.SelectSingleNode("tbody").SelectNodes("tr").Clear();
+            }
+            catch
+            {
+                return;
+            }
+
+            foreach (HtmlNode row in table.SelectSingleNode("tbody").SelectNodes("tr"))
+            {
+                List<HtmlNode> cells = row.SelectNodes("th|td")?.ToList();
+
+                string mapLink = cells[1].FirstChild.Attributes[0].Value;
+                string mods = "Normal";
+
+                if (cells[1].ChildNodes.Count == 3)
                 {
-                    List<HtmlNode> cells = row.SelectNodes("th|td")?.ToList();
-
-                    string mapLink = cells[1].FirstChild.Attributes[0].Value;
-                    string mods = "Normal";
-
-                    if (cells[1].ChildNodes.Count == 3)
-                    {
-                        mods = cells[1].ChildNodes[2].InnerHtml;
-                    }
-
-                    string score = cells[2].InnerText.Replace(" ", string.Empty);
-                    string accuracy = cells[3].InnerText.Replace("%", string.Empty);
-                    string miss = cells[4].InnerText;
-                    string points = cells[5].InnerText;
-
-                    if (mods.Equals("Random") ||
-                        mods.Equals("Hidden") ||
-                        mods.Equals("Relax") ||
-                        mods.Equals("Endless"))
-                    {
-                        continue;
-                    }
-
-                    if (this.Scores.All(x => x.MapLink != mapLink))
-                    {
-                        continue;
-                    }
-
-                    MapScore map = this.Scores.First(x => x.MapLink == mapLink);
-                    map.Score = int.Parse(score);
-                    map.Accuracy = double.Parse(accuracy);
-                    map.Miss = int.Parse(miss!);
-                    map.Points = double.Parse(points!);
+                    mods = cells[1].ChildNodes[2].InnerHtml;
                 }
+
+                string score = cells[2].InnerText.Replace(" ", string.Empty);
+                string accuracy = cells[3].InnerText.Replace("%", string.Empty);
+                string miss = cells[4].InnerText;
+                string points = cells[5].InnerText;
+
+                if (mods.Equals("Random") ||
+                    mods.Equals("Hidden") ||
+                    mods.Equals("Relax") ||
+                    mods.Equals("Endless"))
+                {
+                    continue;
+                }
+
+                if (this.Scores.All(x => x.MapLink != mapLink))
+                {
+                    continue;
+                }
+
+                MapScore map = this.Scores.First(x => x.MapLink == mapLink);
+                map.Score = int.Parse(score);
+                map.Accuracy = double.Parse(accuracy);
+                map.Miss = int.Parse(miss!);
+                map.Points = double.Parse(points!);
             }
         }
 
