@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 
 namespace IntralismScoreChecker
@@ -15,12 +16,13 @@ namespace IntralismScoreChecker
         /// <returns> Returns the content of the csv file in a 2d string array. </returns>
         public static string[][] GetCsvContent(string path)
         {
-            if (File.Exists(path) && !string.IsNullOrWhiteSpace(File.ReadAllText(path!)))
+            if (File.Exists(path) &&
+                !string.IsNullOrWhiteSpace(File.ReadAllText(path!)))
             {
                 return File.ReadLines(path).Select(line => line.Split(",")).ToArray();
             }
 
-            return System.Array.Empty<string[]>();
+            return Array.Empty<string[]>();
         }
     }
 }

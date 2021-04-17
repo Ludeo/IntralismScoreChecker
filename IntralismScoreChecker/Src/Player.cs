@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using HtmlAgilityPack;
 using Newtonsoft.Json;
@@ -14,17 +15,18 @@ namespace IntralismScoreChecker
         private const string ScoresCsvPath = "scores.csv";
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="Player"/> class.
+        ///     Initializes a new instance of the <see cref="Player" /> class.
         /// </summary>
-        public Player()
-        {
-        }
+        public Player() { }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="Player"/> class.
+        ///     Initializes a new instance of the <see cref="Player" /> class.
         /// </summary>
         /// <param name="profileLink"> Link to the profile of the player or the search input. </param>
-        /// <param name="withLink"> Boolean that indicates if profileLink is the actual profile link or if you want to search for a player. </param>
+        /// <param name="withLink">
+        ///     Boolean that indicates if profileLink is the actual profile link or if you want to search for a
+        ///     player.
+        /// </param>
         public Player(string profileLink, bool withLink)
         {
             if (withLink == false)
@@ -33,7 +35,12 @@ namespace IntralismScoreChecker
             }
 
             this.Link = profileLink;
-            this.Id = long.Parse(profileLink[(profileLink.LastIndexOf("=", StringComparison.Ordinal) + 1) ..]!);
+
+            this.Id = long.Parse(
+                profileLink[(profileLink.LastIndexOf("=", StringComparison.InvariantCulture) + 1) ..]!,
+                NumberStyles.Integer,
+                CultureInfo.InvariantCulture);
+
             this.FillScoresList();
             this.ReadHtmlCode();
             this.RecalculateScores();
@@ -41,14 +48,19 @@ namespace IntralismScoreChecker
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="Player"/> class.
+        ///     Initializes a new instance of the <see cref="Player" /> class.
         /// </summary>
         /// <param name="rank"> Global Rank of the player. </param>
         public Player(int rank)
         {
             string profileLink = GetPlayerLink(rank);
             this.Link = profileLink;
-            this.Id = long.Parse(profileLink[(profileLink.LastIndexOf("=", StringComparison.Ordinal) + 1) ..]!);
+
+            this.Id = long.Parse(
+                profileLink[(profileLink.LastIndexOf("=", StringComparison.InvariantCulture) + 1) ..]!,
+                NumberStyles.Integer,
+                CultureInfo.InvariantCulture);
+
             this.FillScoresList();
             this.ReadHtmlCode();
             this.RecalculateScores();
@@ -59,115 +71,116 @@ namespace IntralismScoreChecker
         ///     Gets or sets the link of the player.
         /// </summary>
         [JsonProperty("link")]
-        public string         Link             { get; set; }
+        public string Link { get; set; }
 
         /// <summary>
         ///     Gets or sets the id of the player.
         /// </summary>
         [JsonProperty("id")]
-        public long           Id               { get; set; }
+        public long Id { get; set; }
 
         /// <summary>
         ///     Gets or sets the name of the player.
         /// </summary>
         [JsonProperty("name")]
-        public string         Name             { get; set; }
+        public string Name { get; set; }
 
         /// <summary>
         ///     Gets or sets the link to the profile picture of the player.
         /// </summary>
         [JsonProperty("picturelink")]
-        public string         PictureLink      { get; set; }
+        public string PictureLink { get; set; }
 
         /// <summary>
-        ///     Gets or sets the List of <see cref="MapScore"/> that the user played.
+        ///     Gets or sets the List of <see cref="MapScore" /> that the user played.
         /// </summary>
         [JsonProperty("scores")]
-        public List<MapScore> Scores           { get; set; } = new List<MapScore>();
+        public List<MapScore> Scores { get; set; } = new List<MapScore>();
 
         /// <summary>
         ///     Gets or sets the global rank of the player.
         /// </summary>
         [JsonProperty("globalrank")]
-        public int            GlobalRank       { get; set; }
+        public int GlobalRank { get; set; }
 
         /// <summary>
         ///     Gets or sets the total amount of players that have a global rank.
         /// </summary>
         [JsonProperty("totalglobalrank")]
-        public int            TotalGlobalRank  { get; set; }
+        public int TotalGlobalRank { get; set; }
 
         /// <summary>
         ///     Gets or sets the country rank of the player.
         /// </summary>
         [JsonProperty("countryrank")]
-        public int            CountryRank      { get; set; }
+        public int CountryRank { get; set; }
 
         /// <summary>
         ///     Gets or sets the total amount of players that have a country rank in the same country as the player.
         /// </summary>
         [JsonProperty("totalcountryrank")]
-        public int            TotalCountryRank { get; set; }
+        public int TotalCountryRank { get; set; }
 
         /// <summary>
         ///     Gets or sets the country of the player.
         /// </summary>
         [JsonProperty("country")]
-        public string         Country          { get; set; }
+        public string Country { get; set; }
 
         /// <summary>
         ///     Gets or sets the average miss count of the player.
         /// </summary>
         [JsonProperty("averagemisses")]
-        public double         AverageMisses    { get; set; }
+        public double AverageMisses { get; set; }
 
         /// <summary>
         ///     Gets or sets the average accuracy of the player.
         /// </summary>
         [JsonProperty("averageaccuracy")]
-        public double         AverageAccuracy  { get; set; }
+        public double AverageAccuracy { get; set; }
 
         /// <summary>
         ///     Gets or sets the total amount of points that the player got.
         /// </summary>
         [JsonProperty("points")]
-        public double         Points           { get; set; }
+        public double Points { get; set; }
 
         /// <summary>
-        ///     Gets or sets the real amount of points that the player would get, if maps wouldn't have <see cref="BrokenType"/> Broken.
+        ///     Gets or sets the real amount of points that the player would get, if maps wouldn't have <see cref="BrokenType" />
+        ///     Broken.
         /// </summary>
         [JsonProperty("realpoints")]
-        public double         RealPoints       { get; set; }
+        public double RealPoints { get; set; }
 
         /// <summary>
         ///     Gets or sets the total amount of points that are achievable.
         /// </summary>
         [JsonProperty("maximumpoints")]
-        public double         MaximumPoints    { get; set; }
+        public double MaximumPoints { get; set; }
 
         /// <summary>
         ///     Gets or sets the difference between the points and the maximum points of the player.
         /// </summary>
         [JsonProperty("difference")]
-        public double         Difference       { get; set; }
+        public double Difference { get; set; }
 
         /// <summary>
         ///     Gets or sets the total amount of 100% accuracy plays of the player.
         /// </summary>
         [JsonProperty("hundredplays")]
-        public int            HundredPlays     { get; set; }
+        public int HundredPlays { get; set; }
 
         /// <summary>
         ///     Gets or sets the total amount of ranked maps.
         /// </summary>
         [JsonProperty("totalmaps")]
-        public int            TotalMaps        { get; set; }
+        public int TotalMaps { get; set; }
 
         /// <summary>
         ///     Gets or sets the amount of points that the player needs to rank up in global ranks.
         /// </summary>
         [JsonProperty("rankuppoints")]
-        public double         RankUpPoints     { get; set; }
+        public double RankUpPoints { get; set; }
 
         /// <summary>
         ///     Gets or sets the time when the player was checked.
@@ -178,12 +191,13 @@ namespace IntralismScoreChecker
         private static string SearchForPlayer(string searchInput)
         {
             string url = "https://intralism.khb-soft.ru/?page=ranks&search=" + searchInput;
-            HtmlWeb web = new ();
+            HtmlWeb web = new();
             HtmlDocument doc = web.Load(url);
 
             HtmlNode table = doc.DocumentNode.SelectSingleNode("/html/body/main/div[3]/table");
             HtmlNode row = table.SelectSingleNode("tbody").SelectNodes("tr")[0];
             string profile = row.Attributes[2].Value.TrimStart('.');
+
             return "https://intralism.khb-soft.ru/" + profile;
         }
 
@@ -204,12 +218,13 @@ namespace IntralismScoreChecker
             }
 
             string url = "https://intralism.khb-soft.ru/?page=ranks&n=" + siteNumber;
-            HtmlWeb web = new ();
+            HtmlWeb web = new();
             HtmlDocument doc = web.Load(url);
 
             HtmlNode table = doc.DocumentNode.SelectSingleNode("/html/body/main/div[3]/table");
             HtmlNode row = table.SelectSingleNode("tbody").SelectNodes("tr")[index];
             string profile = row.Attributes[2].Value.TrimStart('.');
+
             return "https://intralism.khb-soft.ru/" + profile;
         }
 
@@ -227,9 +242,13 @@ namespace IntralismScoreChecker
             List<HtmlNode> totalGlobalRankNode = doc.DocumentNode.SelectNodes("/html/body/main/div[2]/div[2]").Nodes()?.ToList();
 
             string user = usernameNode.InnerText;
-            this.Name = user.Substring(0, user.LastIndexOf("#", StringComparison.Ordinal));
+            this.Name = user.Substring(0, user.LastIndexOf("#", StringComparison.InvariantCulture));
 
-            if (!int.TryParse(user[(user.LastIndexOf("#", StringComparison.Ordinal) + 1) ..], out int tempGlobalRank))
+            if (!int.TryParse(
+                user[(user.LastIndexOf("#", StringComparison.InvariantCulture) + 1) ..],
+                NumberStyles.Integer,
+                CultureInfo.InvariantCulture,
+                out int tempGlobalRank))
             {
                 tempGlobalRank = -1;
             }
@@ -238,16 +257,23 @@ namespace IntralismScoreChecker
 
             this.Country = countryNode.InnerText;
 
-            this.TotalGlobalRank = int.Parse(totalGlobalRankNode[4].InnerText.Replace(" / ", string.Empty));
+            this.TotalGlobalRank = int.Parse(
+                totalGlobalRankNode[4].InnerText.Replace(" / ", string.Empty),
+                NumberStyles.Integer,
+                CultureInfo.InvariantCulture);
 
-            if (!int.TryParse(totalGlobalRankNode[9].InnerText, out int tempCountryRank))
+            if (!int.TryParse(totalGlobalRankNode[9].InnerText, NumberStyles.Integer, CultureInfo.InvariantCulture, out int tempCountryRank))
             {
                 tempCountryRank = -1;
             }
 
             this.CountryRank = tempCountryRank;
 
-            this.TotalCountryRank = int.Parse(totalGlobalRankNode[10].InnerText.Replace(" / ", string.Empty));
+            this.TotalCountryRank = int.Parse(
+                totalGlobalRankNode[10].InnerText.Replace(" / ", string.Empty),
+                NumberStyles.Integer,
+                CultureInfo.InvariantCulture);
+
             this.PictureLink = pictureNode.Attributes[1].Value;
 
             this.TotalMaps = this.Scores.Count;
@@ -299,10 +325,10 @@ namespace IntralismScoreChecker
                 }
 
                 MapScore map = this.Scores.First(x => x.MapLink == mapLink);
-                map.Score = int.Parse(score);
-                map.Accuracy = double.Parse(accuracy);
-                map.Miss = int.Parse(miss!);
-                map.Points = double.Parse(points!);
+                map.Score = int.Parse(score, NumberStyles.Integer, CultureInfo.InvariantCulture);
+                map.Accuracy = double.Parse(accuracy, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.InvariantCulture);
+                map.Miss = int.Parse(miss!, NumberStyles.Integer, CultureInfo.InvariantCulture);
+                map.Points = double.Parse(points!, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.InvariantCulture);
             }
         }
 
@@ -312,11 +338,12 @@ namespace IntralismScoreChecker
 
             foreach (string[] score in scores)
             {
-                this.Scores.Add(new MapScore(
-                                    "https://steamcommunity.com/sharedfiles/filedetails/?id=" + score[3],
-                                    score[0],
-                                    double.Parse(score[1]!),
-                                    score[2]));
+                this.Scores.Add(
+                    new MapScore(
+                        "https://steamcommunity.com/sharedfiles/filedetails/?id=" + score[3],
+                        score[0],
+                        double.Parse(score[1]!, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.InvariantCulture),
+                        score[2]));
             }
         }
 
@@ -325,6 +352,7 @@ namespace IntralismScoreChecker
             if (this.GlobalRank == -1)
             {
                 this.RankUpPoints = 0.01;
+
                 return;
             }
 
@@ -370,14 +398,21 @@ namespace IntralismScoreChecker
             }
             else
             {
-                currentPoints = double.Parse(current.SelectNodes("td")[3].InnerText.Replace(" ", string.Empty));
+                currentPoints = double.Parse(
+                    current.SelectNodes("td")[3].InnerText.Replace(" ", string.Empty),
+                    NumberStyles.Float | NumberStyles.AllowThousands,
+                    CultureInfo.InvariantCulture);
             }
 
-            double beforePoints = double.Parse(before.SelectNodes("td")[3].InnerText.Replace(" ", string.Empty));
+            double beforePoints = double.Parse(
+                before.SelectNodes("td")[3].InnerText.Replace(" ", string.Empty),
+                NumberStyles.Float | NumberStyles.AllowThousands,
+                CultureInfo.InvariantCulture);
 
             if (this.GlobalRank == 1)
             {
                 this.RankUpPoints = 0;
+
                 return;
             }
 
